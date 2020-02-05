@@ -1,3 +1,12 @@
+const mongoose = require('mongoose')
+const Pizza = require('./models/pizza')
+const url = 'mongodb://localhost:27017/pizzaPlace'
+
+const connection = mongoose.connect(url)
+connection.then((db) => {
+  console.log('conectado ao mongodb')
+}).catch(console.log)
+
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
@@ -9,6 +18,8 @@ var usersRouter = require('./routes/users');
 var comidasRouter = require('./routes/comidas');
 var promosRouter = require('./routes/promos');
 var combosRouter = require('./routes/combos');
+// TEST
+var pizzasRouter = require('./routes/pizzas');
 
 var app = express();
 
@@ -27,14 +38,16 @@ app.use('/users', usersRouter);
 app.use('/comidas', comidasRouter);
 app.use('/promos', promosRouter);
 app.use('/combos', combosRouter);
+// TEST
+app.use('/pizzas', pizzasRouter);
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   next(createError(404));
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
