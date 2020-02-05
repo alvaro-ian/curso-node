@@ -19,7 +19,7 @@ var comidasRouter = require('./routes/comidas');
 var promosRouter = require('./routes/promos');
 var combosRouter = require('./routes/combos');
 // TEST
-var pizzasRouter = require('./routes/pizzas');
+var pizzasRouter = require('./routes/rotasPizza');
 
 var app = express();
 
