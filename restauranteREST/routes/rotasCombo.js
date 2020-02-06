@@ -1,54 +1,63 @@
 const express = require('express')
-const rotas = express.Router()
+const Combo = require('../models/combo')
 
-rotas.route('/')
+const comboRouter = express.Router()
+
+comboRouter.route('/')
     .all((req, res, next) => {
-        res.status(200)
-        res.append('Content-type', 'text-plain')
+        res.status(200).append('Content-Type', 'application/json')
         next()
     })
-    .get((req, res) => {
-        res.end('enviando combos')
+    .get((req, res, next) => {
+        Combo.find({}).exec()
+            .then((combos) => {
+                res.json(combos)
+            })
+            .catch(next)
     })
-    .post((req, res) => {
-        const { name, description } = req.body
-        res.end(`adicionando o combo: ${name}, ${description}`)
-    })
-    .put((req, res) => {
-        res.status(405)
-        res.append('Allow', ['GET', 'POST', 'DELETE'])
-        res.end('operação PUT não é suportada em /combos')
-    })
-    .delete((req, res) => {
-        res.end('deletando todos os combos')
-    })
-
-rotas.route('/:comboId')
-    .all((req, res, next) => {
-        res.status(200)
-        res.append('Content-type', 'text-plain')
-        next()
-    })
-    .get((req, res) => {
-        const { comboId } = req.params
-        res.end(`informações do combo: ${comboId}`)
-    })
-    .post((req, res) => {
-        const { comboId } = req.params
-        res.status(405)
-        res.append('Allow', ['GET', 'PUT', 'DELETE'])
-        res.end(`operação POST não é suportada em /combos/${comboId}`)
+    .post((req, res, next) => {
+        Combo.create(req.body)
+            .then((combo) => {
+                res.json(combo)
+            })
+            .catch(next)
     })
     .put((req, res) => {
-        const { comboId } = req.params
-        const { name, description } = req.body
-        res.write(`atualizando combo: ${comboId} `)
-        res.write(`novo nome: ${name} `)
-        res.end(`nova descrição: ${description}`)
+        res.status(405).json({ error: 'operação PUT não suportada em /combos' })
     })
-    .delete((req, res) => {
-        const { comboId } = req.params
-        res.end(`deletando combo: ${comboId}`)
+    .delete((req, res, next) => {
+        Combo.remove({}).exec()
+            .then((combos) => {
+                res.json(combos)
+            })
+            .catch(next)
     })
 
-module.exports = rotas
+comboRouter.route('/:comboId')
+    .get((req, res, next) => {
+        Combo.findById(req.params.comboId).exec()
+            .then((combo) => {
+                res.json(combo)
+            })
+            .catch(next)
+    })
+    .post((req, res) => {
+        res.status(405).json({ error: 'operação POST não suportada em ' + req.originalUrl })
+    })
+    .put((req, res, next) => {
+        Combo.findByIdAndUpdate(req.params.comboId,
+            { $set: req.body }, { new: true }).exec()
+            .then((combo) => {
+                res.json(combo)
+            })
+            .catch(next)
+    })
+    .delete((req, res, next) => {
+        Combo.findByIdAndRemove(req.params.comboId).exec()
+            .then((combo) => {
+                res.json(combo)
+            })
+            .catch(next)
+    })
+
+module.exports = comboRouter
