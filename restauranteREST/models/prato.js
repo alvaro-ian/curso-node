@@ -20,7 +20,7 @@ const commentSchema = new Schema({
     timestamps: true
 })
 
-const pizzaSchema = new Schema({
+const pratoSchema = new Schema({
     name: {
         type: String,
         require: true,
@@ -52,6 +52,6 @@ const pizzaSchema = new Schema({
     timestamps: true
 })
 
-const Pizza = mongoose.model('Pizza', pizzaSchema)
+const Prato = mongoose.model('Prato', pratoSchema)
 
-module.exports = Pizza
+module.exports = Prato

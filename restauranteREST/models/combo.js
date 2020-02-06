@@ -8,7 +8,7 @@ const comboSchema = new Schema({
         unique: true
     },
     tags: [String],
-    pizzas: {
+    pratos: {
         type: [String],
         require: true
     },

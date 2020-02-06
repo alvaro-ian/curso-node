@@ -1,6 +1,5 @@
 const mongoose = require('mongoose')
-const Pizza = require('./models/pizza')
-const url = 'mongodb://localhost:27017/pizzaPlace'
+const url = 'mongodb://localhost:27017/restauranteREST'
 
 const connection = mongoose.connect(url)
 connection.then((db) => {
@@ -21,11 +20,9 @@ const auth = require('./autenticacao');
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
-const comidasRouter = require('./routes/rotasComida');
+const pratosRouter = require('./routes/rotasPrato');
 const promosRouter = require('./routes/rotasPromo');
 const combosRouter = require('./routes/rotasCombo');
-// Exemplo
-const pizzasRouter = require('./routes/rotasPizza');
 
 const app = express();
 
@@ -54,11 +51,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
-app.use('/comidas', auth.verifyUser, comidasRouter);
+app.use('/pratos', /*auth.verifyUser,*/ pratosRouter);
 app.use('/promos', promosRouter);
 app.use('/combos', combosRouter);
-// Exemplo
-app.use('/pizzas', pizzasRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
