@@ -32,21 +32,8 @@ function auth(req, res, next) {
     return next(err);
   }
 
-  if (req.session.user) {
-    if (req.session.user != 'admin') unauthorized();
-    return next();
-  }
+  if (!req.session.user) unauthorized();
 
-  const header = req.headers.authorization;
-
-  if (!header) return unauthorized();
-
-  const credentials = Buffer.from(header.split(' ')[1], 'base64');
-  const [username, password] = credentials.toString().split(':');
-
-  if (username != 'admin' || password != 'admin') return unauthorized();
-
-  req.session.user = 'admin';
   next();
 }
 
