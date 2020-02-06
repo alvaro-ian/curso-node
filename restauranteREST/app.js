@@ -15,10 +15,10 @@ var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
-var comidasRouter = require('./routes/comidas');
-var promosRouter = require('./routes/promos');
-var combosRouter = require('./routes/combos');
-// TEST
+var comidasRouter = require('./routes/rotasComida');
+var promosRouter = require('./routes/rotasPromo');
+var combosRouter = require('./routes/rotasCombo');
+// Exemplo
 var pizzasRouter = require('./routes/rotasPizza');
 
 var app = express();
@@ -38,7 +38,7 @@ app.use('/users', usersRouter);
 app.use('/comidas', comidasRouter);
 app.use('/promos', promosRouter);
 app.use('/combos', combosRouter);
-// TEST
+// Exemplo
 app.use('/pizzas', pizzasRouter);
 
 // catch 404 and forward to error handler
