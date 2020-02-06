@@ -13,6 +13,9 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 
+const session = require('express-session')
+const FileStore = require('session-file-store')(session)
+
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const comidasRouter = require('./routes/rotasComida');
@@ -29,8 +32,8 @@ function auth(req, res, next) {
     return next(err);
   }
 
-  if (req.signedCookies.user) {
-    if (req.signedCookies.user != 'admin') unauthorized();
+  if (req.session.user) {
+    if (req.session.user != 'admin') unauthorized();
     return next();
   }
 
@@ -43,7 +46,7 @@ function auth(req, res, next) {
 
   if (username != 'admin' || password != 'admin') return unauthorized();
 
-  res.cookie('user', 'admin', { signed: true });
+  req.session.user = 'admin';
   next();
 }
 
@@ -57,6 +60,13 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser('secret'));
+app.use(session({
+  name: 'session-id',
+  secret: 'secret',
+  saveUninitialized: false,
+  resave: false,
+  store: new FileStore()
+}));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
