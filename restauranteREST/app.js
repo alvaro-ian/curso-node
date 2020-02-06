@@ -16,6 +16,9 @@ const logger = require('morgan');
 const session = require('express-session')
 const FileStore = require('session-file-store')(session)
 
+const passport = require('passport')
+const auth = require('./autenticacao');
+
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const comidasRouter = require('./routes/rotasComida');
@@ -23,19 +26,6 @@ const promosRouter = require('./routes/rotasPromo');
 const combosRouter = require('./routes/rotasCombo');
 // Exemplo
 const pizzasRouter = require('./routes/rotasPizza');
-
-function auth(req, res, next) {
-  function unauthorized() {
-    const err = new Error('Não autorizado');
-    res.setHeader('WWW-Authenticate', 'Basic');
-    err.status = 401;
-    return next(err);
-  }
-
-  if (!req.session.user) unauthorized();
-
-  next();
-}
 
 const app = express();
 
@@ -47,6 +37,7 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser('secret'));
+/*
 app.use(session({
   name: 'session-id',
   secret: 'secret',
@@ -54,14 +45,16 @@ app.use(session({
   resave: false,
   store: new FileStore()
 }));
+*/
+
+app.use(passport.initialize());
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
-app.use(auth);
-
-app.use('/comidas', comidasRouter);
+app.use('/comidas', auth.verifyUser, comidasRouter);
 app.use('/promos', promosRouter);
 app.use('/combos', combosRouter);
 // Exemplo
