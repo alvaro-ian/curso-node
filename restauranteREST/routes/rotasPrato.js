@@ -98,7 +98,7 @@ pratoRouter.route('/:pratoId/comments')
         const { originalUrl } = req
         res.status(405).json({ error: `operação PUT não suportada em ${originalUrl}` })
     })
-    .delete((req, res, next) => {
+    .delete(verifyAdmin, (req, res, next) => {
         Prato.findById(req.params.pratoId).exec()
             .then((prato) => {
                 if (prato != null) {
@@ -142,13 +142,17 @@ pratoRouter.route('/:pratoId/comments/:commentId')
         Prato.findById(req.params.pratoId).exec()
             .then((prato) => {
                 if (prato != null && prato.comments.id(req.params.commentId) != null) {
-                    if (req.body.rating) {
-                        prato.comments.id(req.params.commentId).rating = req.body.rating
+                    if (req.user.username !== prato.comments.id(req.params.commentId).author) {
+                        res.send('usuario não tem permissão para editar o comentário')
+                    } else {
+                        if (req.body.rating) {
+                            prato.comments.id(req.params.commentId).rating = req.body.rating
+                        }
+                        if (req.body.comment) {
+                            prato.comments.id(req.params.commentId).comment = req.body.comment
+                        }
+                        return prato.save()
                     }
-                    if (req.body.comment) {
-                        prato.comments.id(req.params.commentId).comment = req.body.comment
-                    }
-                    return prato.save()
                 } else if (prato == null) {
                     res.json({ error: 'prato não encontrado' })
                 } else {
@@ -164,8 +168,12 @@ pratoRouter.route('/:pratoId/comments/:commentId')
         Prato.findById(req.params.pratoId).exec()
             .then((prato) => {
                 if (prato != null && prato.comments.id(req.params.commentId) != null) {
-                    prato.comments.id(req.params.commentId).remove()
-                    return prato.save()
+                    if (req.user.username !== prato.comments.id(req.params.commentId).author) {
+                        res.send('usuario não tem permissão para editar o comentário')
+                    } else {
+                        prato.comments.id(req.params.commentId).remove()
+                        return prato.save()
+                    }
                 } else if (prato == null) {
                     res.json({ error: 'prato não encontrado' })
                 } else {
