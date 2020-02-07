@@ -51,7 +51,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
-app.use('/pratos', auth.verifyUser, pratosRouter);
+app.use('/pratos', auth.verifyUser, auth.verifyAdmin, pratosRouter);
 app.use('/promos', promosRouter);
 app.use('/combos', combosRouter);
 
