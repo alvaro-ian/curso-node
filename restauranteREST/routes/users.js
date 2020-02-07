@@ -8,12 +8,17 @@ var User = require('../models/user')
 
 /* GET users listing. */
 router.get('/', function (req, res, next) {
-  res.send('respond with a resource');
+  User.find({}).exec()
+    .then((users) => {
+      res.json(users);
+    })
+    .catch(next)
 });
 
 router.post('/signup', (req, res, next) => {
   User.register(new User({
-    username: req.body.username
+    username: req.body.username,
+    admin: (req.body.admin) ? req.body.admin : false
   }), req.body.password, (err, usuario) => {
     if (err) {
       return next(err)
