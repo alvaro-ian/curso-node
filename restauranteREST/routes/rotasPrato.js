@@ -79,7 +79,11 @@ pratoRouter.route('/:pratoId/comments')
         Prato.findById(req.params.pratoId).exec()
             .then((prato) => {
                 if (prato != null) {
-                    prato.comments.push(req.body)
+                    prato.comments.push({
+                        author: req.user.username,
+                        comment: req.body.comment,
+                        rating: req.body.rating
+                    })
                     return prato.save()
                 } else {
                     res.json({ error: 'prato não encontrado' })
