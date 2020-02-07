@@ -51,9 +51,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
-app.use('/pratos', auth.verifyUser, auth.verifyAdmin, pratosRouter);
+app.use('/pratos', pratosRouter);
 app.use('/promos', promosRouter);
-app.use('/combos', combosRouter);
+app.use('/combos', auth.verifyUser, combosRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

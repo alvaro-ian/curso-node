@@ -4,21 +4,21 @@ const Schema = mongoose.Schema
 const comboSchema = new Schema({
     name: {
         type: String,
-        require: true,
+        required: true,
         unique: true
     },
     tags: [String],
     pratos: {
         type: [String],
-        require: true
+        required: true
     },
     discount: {
         type: Number,
-        require: true
+        required: true
     },
     description: {
         type: String,
-        require: true
+        required: true
     }
 }, {
     timestamps: true
