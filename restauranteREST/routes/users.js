@@ -2,12 +2,12 @@ var express = require('express');
 var router = express.Router();
 
 const passport = require('passport')
-const { getToken } = require('../autenticacao')
+const { getToken, verifyUser, verifyAdmin } = require('../autenticacao')
 
 var User = require('../models/user')
 
 /* GET users listing. */
-router.get('/', function (req, res, next) {
+router.get('/', verifyUser, verifyAdmin, function (req, res, next) {
   User.find({}).exec()
     .then((users) => {
       res.json(users);
