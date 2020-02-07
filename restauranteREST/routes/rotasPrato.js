@@ -3,6 +3,8 @@ const Prato = require('../models/prato')
 
 const pratoRouter = express.Router()
 
+const { verifyAdmin } = require('../autenticacao')
+
 pratoRouter.route('/')
     .all((req, res, next) => {
         res.status(200).append('Content-Type', 'application/json')
@@ -15,17 +17,17 @@ pratoRouter.route('/')
             })
             .catch(next)
     })
-    .post((req, res, next) => {
+    .post(verifyAdmin, (req, res, next) => {
         Prato.create(req.body)
             .then((prato) => {
                 res.json(prato)
             })
             .catch(next)
     })
-    .put((req, res) => {
+    .put(verifyAdmin, (req, res) => {
         res.status(405).json({ error: 'operação PUT não suportada em /pratos' })
     })
-    .delete((req, res, next) => {
+    .delete(verifyAdmin, (req, res, next) => {
         Prato.remove({}).exec()
             .then((pratos) => {
                 res.json(pratos)
@@ -41,10 +43,10 @@ pratoRouter.route('/:pratoId')
             })
             .catch(next)
     })
-    .post((req, res) => {
+    .post(verifyAdmin, (req, res) => {
         res.status(405).json({ error: 'operação POST não suportada ' + req.originalUrl })
     })
-    .put((req, res, next) => {
+    .put(verifyAdmin, (req, res, next) => {
         Prato.findByIdAndUpdate(req.params.pratoId,
             { $set: req.body }, { new: true }).exec()
             .then((prato) => {
@@ -52,7 +54,7 @@ pratoRouter.route('/:pratoId')
             })
             .catch(next)
     })
-    .delete((req, res, next) => {
+    .delete(verifyAdmin, (req, res, next) => {
         Prato.findByIdAndRemove(req.params.pratoId).exec()
             .then((prato) => {
                 res.json(prato)
