@@ -25,6 +25,10 @@ exports.jwt = passport.use(new Strategy(opts, (payload, done) => {
 
 exports.local = passport.use(new LocalStrategy(User.authenticate()))
 exports.verifyUser = passport.authenticate('jwt', { session: false })
+exports.verifyAdmin = (req, res, next) => {
+    if (req.user.admin) return next()
+    res.send('usuário não tem permissão de admin')
+}
 
 passport.serializeUser(User.serializeUser())
 passport.deserializeUser(User.deserializeUser())
