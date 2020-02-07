@@ -4,22 +4,22 @@ const Schema = mongoose.Schema
 const promoSchema = new Schema({
     name: {
         type: String,
-        require: true,
+        required: true,
         unique: true
     },
     image: {
         type: String,
-        require: true
+        required: true
     },
     tags: [String],
     price: {
         type: Number,
-        require: true,
+        required: true,
         min: 0
     },
     description: {
         type: String,
-        require: true
+        required: true
     }
 }, {
     timestamps: true

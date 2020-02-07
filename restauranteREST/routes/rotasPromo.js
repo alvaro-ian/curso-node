@@ -3,6 +3,8 @@ const Promo = require('../models/promo')
 
 const promoRouter = express.Router()
 
+const { verifyAdmin } = require('../autenticacao')
+
 promoRouter.route('/')
     .all((req, res, next) => {
         res.status(200).append('Content-Type', 'application/json')
@@ -15,17 +17,17 @@ promoRouter.route('/')
             })
             .catch(next)
     })
-    .post((req, res, next) => {
+    .post(verifyAdmin, (req, res, next) => {
         Promo.create(req.body)
             .then((promo) => {
                 res.json(promo)
             })
             .catch(next)
     })
-    .put((req, res) => {
+    .put(verifyAdmin, (req, res) => {
         res.status(405).json({ error: 'operação PUT não suportada em /promos' })
     })
-    .delete((req, res, next) => {
+    .delete(verifyAdmin, (req, res, next) => {
         Promo.remove({}).exec()
             .then((promos) => {
                 res.json(promos)
@@ -41,10 +43,10 @@ promoRouter.route('/:promoId')
             })
             .catch(next)
     })
-    .post((req, res) => {
+    .post(verifyAdmin, (req, res) => {
         res.status(405).json('operação POST não suportada ' + req.originalUrl)
     })
-    .put((req, res, next) => {
+    .put(verifyAdmin, (req, res, next) => {
         Promo.findByIdAndUpdate(req.params.promoId,
             { $set: req.body }, { new: true }).exec()
             .then((promo) => {
@@ -52,7 +54,7 @@ promoRouter.route('/:promoId')
             })
             .catch(next)
     })
-    .delete((req, res, next) => {
+    .delete(verifyAdmin, (req, res, next) => {
         Promo.findByIdAndRemove(req.params.promoId).exec()
             .then((promo) => {
                 res.json(promo)
