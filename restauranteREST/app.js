@@ -52,7 +52,7 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
 app.use('/pratos', pratosRouter);
-app.use('/promos', promosRouter);
+app.use('/promos', auth.verifyUser, promosRouter);
 app.use('/combos', auth.verifyUser, combosRouter);
 
 // catch 404 and forward to error handler

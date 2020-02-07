@@ -43,10 +43,10 @@ comboRouter.route('/:comboId')
             })
             .catch(next)
     })
-    .post((req, res) => {
+    .post(verifyAdmin, (req, res) => {
         res.status(405).json({ error: 'operação POST não suportada em ' + req.originalUrl })
     })
-    .put((req, res, next) => {
+    .put(verifyAdmin, (req, res, next) => {
         Combo.findByIdAndUpdate(req.params.comboId,
             { $set: req.body }, { new: true }).exec()
             .then((combo) => {
@@ -54,7 +54,7 @@ comboRouter.route('/:comboId')
             })
             .catch(next)
     })
-    .delete((req, res, next) => {
+    .delete(verifyAdmin, (req, res, next) => {
         Combo.findByIdAndRemove(req.params.comboId).exec()
             .then((combo) => {
                 res.json(combo)
